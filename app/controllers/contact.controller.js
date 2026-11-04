@@ -10,8 +10,15 @@ function fail(next, error, message) {
     return next(error instanceof ApiError ? error : new ApiError(500, message));
 }
 
-exports.create = (req, res) => {
-    res.json({ message: "create handler" });
+exports.create = async (req, res, next) => {
+    if (typeof req.body?.name !== "string" || !req.body.name.trim()) {
+        return next(new ApiError(400, "Name can not be empty"));
+    }
+    try {
+        return res.json(await service().create(req.body));
+    } catch (error) {
+        return fail(next, error, "An error occurred while creating the contact");
+    }
 };
 
 exports.findAll = (req, res) => {
