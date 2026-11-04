@@ -29,6 +29,17 @@ class ContactService {
         return { _id: result.insertedId, ...contact };
     }
 
+    async find(filter) {
+        return await this.Contact.find(filter).toArray();
+    }
+
+    async findByName(name) {
+        const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        return await this.find({
+            name: { $regex: escaped, $options: "i" },
+        });
+    }
+
 }
 
 module.exports = ContactService;

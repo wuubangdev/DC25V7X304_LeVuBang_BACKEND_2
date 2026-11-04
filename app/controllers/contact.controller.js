@@ -21,8 +21,14 @@ exports.create = async (req, res, next) => {
     }
 };
 
-exports.findAll = (req, res) => {
-    res.json({ message: "findAll handler" });
+exports.findAll = async (req, res, next) => {
+    try {
+        const { name } = req.query;
+        const documents = name ? await service().findByName(name) : await service().find({});
+        return res.json(documents);
+    } catch (error) {
+        return fail(next, error, "An error occurred while retrieving contacts");
+    }
 };
 
 exports.findOne = (req, res) => {
