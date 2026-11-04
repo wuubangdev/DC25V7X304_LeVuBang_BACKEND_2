@@ -68,6 +68,10 @@ exports.deleteAll = (req, res) => {
     res.json({ message: "deleteAll handler" });
 };
 
-exports.findAllFavorite = (req, res) => {
-    res.json({ message: "findAllFavorite handler" });
+exports.findAllFavorite = async (req, res, next) => {
+    try {
+        return res.json(await service().findFavorite());
+    } catch (error) {
+        return fail(next, error, "An error occurred while retrieving favorite contacts");
+    }
 };
