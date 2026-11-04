@@ -40,6 +40,11 @@ class ContactService {
         });
     }
 
+    async findById(id) {
+        if (!/^[a-fA-F0-9]{24}$/.test(id)) return null;
+        return await this.Contact.findOne({ _id: new ObjectId(id) });
+    }
+
 }
 
 module.exports = ContactService;

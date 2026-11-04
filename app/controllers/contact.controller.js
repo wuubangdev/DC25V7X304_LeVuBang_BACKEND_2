@@ -31,8 +31,14 @@ exports.findAll = async (req, res, next) => {
     }
 };
 
-exports.findOne = (req, res) => {
-    res.json({ message: "findOne handler" });
+exports.findOne = async (req, res, next) => {
+    try {
+        const document = await service().findById(req.params.id);
+        if (!document) return next(new ApiError(404, "Contact not found"));
+        return res.json(document);
+    } catch (error) {
+        return fail(next, error, "Error retrieving contact");
+    }
 };
 
 exports.update = (req, res) => {
