@@ -45,6 +45,18 @@ class ContactService {
         return await this.Contact.findOne({ _id: new ObjectId(id) });
     }
 
+    async update(id, payload) {
+        if (!/^[a-fA-F0-9]{24}$/.test(id)) return null;
+        const update = this.extractContactData(payload);
+        if (!Object.keys(update).length) {
+            throw new ApiError(400, "Data to update can not be empty");
+        }
+        return await this.Contact.findOneAndUpdate(
+            { _id: new ObjectId(id) }, { $set: update },
+            { returnDocument: "after", includeResultMetadata: false },
+        );
+    }
+
 }
 
 module.exports = ContactService;

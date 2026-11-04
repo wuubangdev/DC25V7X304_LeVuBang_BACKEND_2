@@ -41,8 +41,17 @@ exports.findOne = async (req, res, next) => {
     }
 };
 
-exports.update = (req, res) => {
-    res.json({ message: "update handler" });
+exports.update = async (req, res, next) => {
+    if (!req.body || !Object.keys(req.body).length) {
+        return next(new ApiError(400, "Data to update can not be empty"));
+    }
+    try {
+        const document = await service().update(req.params.id, req.body);
+        if (!document) return next(new ApiError(404, "Contact not found"));
+        return res.json({ message: "Contact was updated successfully" });
+    } catch (error) {
+        return fail(next, error, "Error updating contact");
+    }
 };
 
 exports.delete = (req, res) => {
