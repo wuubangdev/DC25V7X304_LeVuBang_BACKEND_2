@@ -57,6 +57,13 @@ class ContactService {
         );
     }
 
+    async delete(id) {
+        if (!/^[a-fA-F0-9]{24}$/.test(id)) return null;
+        return await this.Contact.findOneAndDelete(
+            { _id: new ObjectId(id) }, { includeResultMetadata: false },
+        );
+    }
+
 }
 
 module.exports = ContactService;

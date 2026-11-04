@@ -54,8 +54,14 @@ exports.update = async (req, res, next) => {
     }
 };
 
-exports.delete = (req, res) => {
-    res.json({ message: "delete handler" });
+exports.delete = async (req, res, next) => {
+    try {
+        const document = await service().delete(req.params.id);
+        if (!document) return next(new ApiError(404, "Contact not found"));
+        return res.json({ message: "Contact was deleted successfully" });
+    } catch (error) {
+        return fail(next, error, "Could not delete contact");
+    }
 };
 
 exports.deleteAll = (req, res) => {
