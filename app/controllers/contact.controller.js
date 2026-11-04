@@ -64,8 +64,13 @@ exports.delete = async (req, res, next) => {
     }
 };
 
-exports.deleteAll = (req, res) => {
-    res.json({ message: "deleteAll handler" });
+exports.deleteAll = async (req, res, next) => {
+    try {
+        const deletedCount = await service().deleteAll();
+        return res.json({ message: `${deletedCount} contacts were deleted successfully` });
+    } catch (error) {
+        return fail(next, error, "An error occurred while removing all contacts");
+    }
 };
 
 exports.findAllFavorite = async (req, res, next) => {
