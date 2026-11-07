@@ -28,6 +28,9 @@ exports.create = async (req, res, next) => {
 exports.findAll = async (req, res, next) => {
     try {
         const { name } = req.query;
+        if (name !== undefined && typeof name !== "string") {
+            return next(new ApiError(400, "Name query must be a string"));
+        }
         const documents = name
             ? await service().findByName(name)
             : await service().find({});
