@@ -1,5 +1,5 @@
 const { ObjectId } = require("mongodb");
-const ApiError = require("../api-error");
+const ApiError = require("../errors/api-error");
 
 class ContactService {
     constructor(client) {
@@ -52,7 +52,8 @@ class ContactService {
             throw new ApiError(400, "Data to update can not be empty");
         }
         return await this.Contact.findOneAndUpdate(
-            { _id: new ObjectId(id) }, { $set: update },
+            { _id: new ObjectId(id) },
+            { $set: update },
             { returnDocument: "after", includeResultMetadata: false },
         );
     }
@@ -60,7 +61,8 @@ class ContactService {
     async delete(id) {
         if (!/^[a-fA-F0-9]{24}$/.test(id)) return null;
         return await this.Contact.findOneAndDelete(
-            { _id: new ObjectId(id) }, { includeResultMetadata: false },
+            { _id: new ObjectId(id) },
+            { includeResultMetadata: false },
         );
     }
 
@@ -72,7 +74,6 @@ class ContactService {
         const result = await this.Contact.deleteMany({});
         return result.deletedCount;
     }
-
 }
 
 module.exports = ContactService;

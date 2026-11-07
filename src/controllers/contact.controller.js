@@ -1,6 +1,6 @@
 const ContactService = require("../services/contact.service");
 const MongoDB = require("../utils/mongodb.util");
-const ApiError = require("../api-error");
+const ApiError = require("../errors/api-error");
 
 function service() {
     return new ContactService(MongoDB.client);
@@ -17,14 +17,20 @@ exports.create = async (req, res, next) => {
     try {
         return res.json(await service().create(req.body));
     } catch (error) {
-        return fail(next, error, "An error occurred while creating the contact");
+        return fail(
+            next,
+            error,
+            "An error occurred while creating the contact",
+        );
     }
 };
 
 exports.findAll = async (req, res, next) => {
     try {
         const { name } = req.query;
-        const documents = name ? await service().findByName(name) : await service().find({});
+        const documents = name
+            ? await service().findByName(name)
+            : await service().find({});
         return res.json(documents);
     } catch (error) {
         return fail(next, error, "An error occurred while retrieving contacts");
@@ -67,9 +73,15 @@ exports.delete = async (req, res, next) => {
 exports.deleteAll = async (req, res, next) => {
     try {
         const deletedCount = await service().deleteAll();
-        return res.json({ message: `${deletedCount} contacts were deleted successfully` });
+        return res.json({
+            message: `${deletedCount} contacts were deleted successfully`,
+        });
     } catch (error) {
-        return fail(next, error, "An error occurred while removing all contacts");
+        return fail(
+            next,
+            error,
+            "An error occurred while removing all contacts",
+        );
     }
 };
 
@@ -77,6 +89,10 @@ exports.findAllFavorite = async (req, res, next) => {
     try {
         return res.json(await service().findFavorite());
     } catch (error) {
-        return fail(next, error, "An error occurred while retrieving favorite contacts");
+        return fail(
+            next,
+            error,
+            "An error occurred while retrieving favorite contacts",
+        );
     }
 };
